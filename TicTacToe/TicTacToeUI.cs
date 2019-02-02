@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace TicTacToe
 {
-    public class TicTacToeBoard
+    public class TicTacToeUI
     {
-        static Char[] players = new Char[] { 'X', 'O' };
-        Char currentPlayer = players[0];
-        Char[] slots = null;
+        static String[] players = new String[] { "X", "O" };
+        String currentPlayer = players[0];
+        String[] slots = null;
         IConsole console = null;
 
-        public TicTacToeBoard(IConsole specifiedConsole)
+        public TicTacToeUI(IConsole specifiedConsole)
         {
             this.console = specifiedConsole;
         }
@@ -38,7 +38,7 @@ namespace TicTacToe
         internal void ResetGame()
         {
             currentPlayer = players[0];
-            slots = Enumerable.Range(1, 9).ToList().ConvertAll((input) => input.ToString()[0]).ToArray();
+            slots = Enumerable.Range(1, 9).ToList().ConvertAll((input) => input.ToString()[0].ToString()).ToArray();
         }
 
         internal void DisplayBoard()
@@ -48,7 +48,7 @@ namespace TicTacToe
             console.WriteLine($"{GetSlot(1)} | {GetSlot(2)} | {GetSlot(3)}");
         }
 
-        internal Char GetSlot(Int32 slotNumber)
+        internal String GetSlot(Int32 slotNumber)
         {
             return slots[slotNumber - 1];
         }
@@ -56,8 +56,8 @@ namespace TicTacToe
         internal void InputMove()
         {
             console.WriteLine($"Please enter a number not filled in yet (Player {currentPlayer}): ");
-            Char moveCharacter = console.ReadLine()[0];
-            Int32 moveNumber = Int32.Parse(moveCharacter.ToString());
+            String move = console.ReadLine()[0].ToString();
+            Int32 moveNumber = Int32.Parse(move);
             if (!IsMoveValid(moveNumber))
             {
                 console.WriteLine("Number filled in already; pick a different number!");
@@ -93,12 +93,12 @@ namespace TicTacToe
             return IsGameWinFor(players[0]) || IsGameWinFor(players[1]);
         }
 
-        internal bool IsGameWinFor(Char player)
+        internal bool IsGameWinFor(String player)
         {
             return IsHorizontalWin(player) || IsVerticalWin(player) || IsDiagonalWin(player);
         }
 
-        internal Char GetWinner()
+        internal String GetWinner()
         {
             return players.ToList().Find((player) => IsGameWinFor(player));
         }
@@ -113,21 +113,21 @@ namespace TicTacToe
             return !IsGameWin() && IsGameFull();
         }
 
-        internal bool IsHorizontalWin(Char player)
+        internal bool IsHorizontalWin(String player)
         {
             return (GetSlot(7) == player && GetSlot(8) == player && GetSlot(9) == player) ||
              (GetSlot(4) == player && GetSlot(5) == player && GetSlot(6) == player) ||
              (GetSlot(1) == player && GetSlot(2) == player && GetSlot(3) == player);
         }
 
-        internal bool IsVerticalWin(Char player)
+        internal bool IsVerticalWin(String player)
         {
             return (GetSlot(7) == player && GetSlot(4) == player && GetSlot(1) == player) ||
              (GetSlot(8) == player && GetSlot(5) == player && GetSlot(2) == player) ||
              (GetSlot(9) == player && GetSlot(6) == player && GetSlot(3) == player);
         }
 
-        internal bool IsDiagonalWin(Char player)
+        internal bool IsDiagonalWin(String player)
         {
             return (GetSlot(7) == player && GetSlot(5) == player && GetSlot(3) == player) ||
              (GetSlot(9) == player && GetSlot(5) == player && GetSlot(1) == player);

@@ -2,15 +2,15 @@
 
 namespace TicTacToe
 {
-    class Program
+    class GameLauncher
     {
         static void Main(string[] args)
         {
-            TicTacToeBoard board = new TicTacToeBoard(new MyConsole());
+            TicTacToeUI gameUI = new TicTacToeUI(new MyConsole());
             Boolean playAgain = false;
             do
             {
-                board.Play();
+                gameUI.Play();
                 Console.WriteLine("Play Again? (Y/N): ");
                 Char playAgainInput = Console.ReadLine()[0];
                 playAgain = playAgainInput.ToString().ToUpper() == "Y";
