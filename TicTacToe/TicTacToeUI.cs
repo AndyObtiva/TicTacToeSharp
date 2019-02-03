@@ -5,57 +5,52 @@ namespace TicTacToe
 {
     public class TicTacToeUI
     {
-        static String[] players = new String[] { "X", "O" };
-        String currentPlayer = players[0];
-        String[] slots = null;
-        IConsole console = null;
+        IConsole console;
+        TicTacToe game;
+        IGame iGame;
 
         public TicTacToeUI(IConsole specifiedConsole)
         {
             this.console = specifiedConsole;
+            game = new TicTacToe();
+            iGame = (IGame)game;
         }
 
         public void Play()
         {
-            ResetGame();
+            game.ResetGame();
             do
             {
                 DisplayBoard();
                 InputMove();
                 SwitchPlayer();
-            } while (!IsGameOver());
+            } while (!game.IsGameOver());
             DisplayBoard();
-            if (IsGameDraw())
+            if (game.IsGameDraw())
             {
-                console.WriteLine("It's a draw!");
+                console.WriteLine("Cat's Game!");
             }
             else
             {
-                console.WriteLine($"Player {GetWinner()} Wins!");
+                console.WriteLine($"Player {iGame.Winner} Won!");
             }
-        }
-
-        internal void ResetGame()
-        {
-            currentPlayer = players[0];
-            slots = Enumerable.Range(1, 9).ToList().ConvertAll((input) => input.ToString()[0].ToString()).ToArray();
         }
 
         internal void DisplayBoard()
         {
-            console.WriteLine($"{GetSlot(7)} | {GetSlot(8)} | {GetSlot(9)}");
-            console.WriteLine($"{GetSlot(4)} | {GetSlot(5)} | {GetSlot(6)}");
-            console.WriteLine($"{GetSlot(1)} | {GetSlot(2)} | {GetSlot(3)}");
+            console.WriteLine($"{DisplaySlot(7)} | {DisplaySlot(8)} | {DisplaySlot(9)}");
+            console.WriteLine($"{DisplaySlot(4)} | {DisplaySlot(5)} | {DisplaySlot(6)}");
+            console.WriteLine($"{DisplaySlot(1)} | {DisplaySlot(2)} | {DisplaySlot(3)}");
         }
 
-        internal String GetSlot(Int32 slotNumber)
+        internal String DisplaySlot(Int32 slotNumber)
         {
-            return slots[slotNumber - 1];
+            return iGame[slotNumber] != null ? iGame[slotNumber] : slotNumber.ToString();
         }
 
         internal void InputMove()
         {
-            console.WriteLine($"Please enter a number not filled in yet (Player {currentPlayer}): ");
+            console.WriteLine($"Please enter a number not filled in yet (Player {game.CurrentPlayer()}): ");
             String move = console.ReadLine()[0].ToString();
             Int32 moveNumber = Int32.Parse(move);
             if (!IsMoveValid(moveNumber))
@@ -70,67 +65,18 @@ namespace TicTacToe
 
         internal void SwitchPlayer()
         {
-            currentPlayer = players.ToList().Find((player) => player != currentPlayer);
+            game.SwitchPlayer();
         }
 
         private bool IsMoveValid(Int32 moveNumber)
         {
-            return !players.Contains(slots[moveNumber - 1]);
+            return game.IsMoveValid(moveNumber);
         }
 
         internal void AcceptMove(Int32 moveNumber)
         {
-            slots[moveNumber - 1] = currentPlayer;
+            iGame.Play(moveNumber);
         }
 
-        internal bool IsGameOver()
-        {
-            return IsGameWin() || IsGameDraw();
-        }
-
-        internal bool IsGameWin()
-        {
-            return IsGameWinFor(players[0]) || IsGameWinFor(players[1]);
-        }
-
-        internal bool IsGameWinFor(String player)
-        {
-            return IsHorizontalWin(player) || IsVerticalWin(player) || IsDiagonalWin(player);
-        }
-
-        internal String GetWinner()
-        {
-            return players.ToList().Find((player) => IsGameWinFor(player));
-        }
-
-        internal bool IsGameFull()
-        {
-            return slots.Aggregate(true, (result, slot) => result && players.Contains(slot));
-        }
-
-        internal bool IsGameDraw()
-        {
-            return !IsGameWin() && IsGameFull();
-        }
-
-        internal bool IsHorizontalWin(String player)
-        {
-            return (GetSlot(7) == player && GetSlot(8) == player && GetSlot(9) == player) ||
-             (GetSlot(4) == player && GetSlot(5) == player && GetSlot(6) == player) ||
-             (GetSlot(1) == player && GetSlot(2) == player && GetSlot(3) == player);
-        }
-
-        internal bool IsVerticalWin(String player)
-        {
-            return (GetSlot(7) == player && GetSlot(4) == player && GetSlot(1) == player) ||
-             (GetSlot(8) == player && GetSlot(5) == player && GetSlot(2) == player) ||
-             (GetSlot(9) == player && GetSlot(6) == player && GetSlot(3) == player);
-        }
-
-        internal bool IsDiagonalWin(String player)
-        {
-            return (GetSlot(7) == player && GetSlot(5) == player && GetSlot(3) == player) ||
-             (GetSlot(9) == player && GetSlot(5) == player && GetSlot(1) == player);
-        }
     }
 }
