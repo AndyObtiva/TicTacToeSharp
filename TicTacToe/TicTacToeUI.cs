@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace TicTacToe
 {
@@ -22,61 +21,40 @@ namespace TicTacToe
             do
             {
                 DisplayBoard();
-                InputMove();
-                SwitchPlayer();
+                Int32 position = InputMove();
+                PlayMove(position);
             } while (!game.IsGameOver());
             DisplayBoard();
-            if (game.IsGameDraw())
-            {
-                console.WriteLine("Cat's Game!");
-            }
-            else
-            {
-                console.WriteLine($"Player {iGame.Winner} Won!");
-            }
+            String endOfGameMessage = game.IsGameDraw() ? "Cat's Game!" : $"Player {iGame.Winner} Won!";
+            console.WriteLine(endOfGameMessage);
         }
 
-        internal void DisplayBoard()
+        void DisplayBoard()
         {
             console.WriteLine($"{DisplaySlot(7)} | {DisplaySlot(8)} | {DisplaySlot(9)}");
             console.WriteLine($"{DisplaySlot(4)} | {DisplaySlot(5)} | {DisplaySlot(6)}");
             console.WriteLine($"{DisplaySlot(1)} | {DisplaySlot(2)} | {DisplaySlot(3)}");
         }
 
-        internal String DisplaySlot(Int32 slotNumber)
+        String DisplaySlot(Int32 slotNumber)
         {
             return iGame[slotNumber] != null ? iGame[slotNumber] : slotNumber.ToString();
         }
 
-        internal void InputMove()
+        Int32 InputMove()
         {
             console.WriteLine($"Please enter a number not filled in yet (Player {game.CurrentPlayer()}): ");
             String move = console.ReadLine()[0].ToString();
-            Int32 moveNumber = Int32.Parse(move);
-            if (!IsMoveValid(moveNumber))
+            return Int32.Parse(move);
+        }
+
+        void PlayMove(Int32 position)
+        {
+            Boolean isMoveValid = iGame.Play(position);
+            if (!isMoveValid)
             {
                 console.WriteLine("Number filled in already; pick a different number!");
             }
-            else
-            {
-                AcceptMove(moveNumber);
-            }
         }
-
-        internal void SwitchPlayer()
-        {
-            game.SwitchPlayer();
-        }
-
-        private bool IsMoveValid(Int32 moveNumber)
-        {
-            return game.IsMoveValid(moveNumber);
-        }
-
-        internal void AcceptMove(Int32 moveNumber)
-        {
-            iGame.Play(moveNumber);
-        }
-
     }
 }

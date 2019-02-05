@@ -9,7 +9,6 @@ namespace TicTacToeTests
         private Queue<string> readLineQueue;
         StringBuilder writeBufferBuilder = new StringBuilder();
 
-
         public FakeConsole(Queue<string> readLineQueue)
         {
             this.readLineQueue = readLineQueue;
